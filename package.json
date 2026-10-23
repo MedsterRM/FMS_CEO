@@ -6,7 +6,11 @@
   "author": "Medster (@MedsterRM)",
   "main": "main.js",
   "scripts": {
+    "build": "node scripts/build.js",
+    "check": "node scripts/build.js --check",
+    "prestart": "npm run build",
     "start": "electron .",
+    "prebuild:win": "npm run build",
     "build:win": "electron-builder --win portable --x64"
   },
   "devDependencies": {

@@ -1,0 +1,55 @@
+/* ---------- ajustes para pantallas de móvil (Android WebView incluido) ---------- */
+@media(max-width:480px){
+  .wrap{padding:18px 12px 70px;}
+  .topbar{padding:10px 12px; gap:10px;}
+  .brand .name{font-size:18px;}
+  .navtab{font-size:13px; padding:7px 10px;}
+  .season-pill{font-size:12px; padding:6px 10px;}
+  .btn{font-size:12.5px; padding:8px 12px;}
+  .btn.small{font-size:10.5px; padding:6px 9px;}
+  .hero{padding:18px 16px; flex-wrap:wrap; gap:12px;}
+  .hero h1{font-size:30px;}
+  .hero p{font-size:14px;}
+  .detail-head h1{font-size:26px;}
+  .detail-head{gap:12px;}
+  .detail-head .thumb-lg{width:50px; height:50px;}
+  .section-title h2{font-size:22px;}
+  .group-head h3{font-size:18px;}
+  .tcard .info .tname{font-size:14px;}
+  .tcard .info .tmeta{font-size:11px;}
+  .status{font-size:10px; padding:3px 7px;}
+  .standings{font-size:12px;}
+  .standings th{font-size:10.5px; padding:6px 5px;}
+  .standings td{padding:7px 5px; font-size:13px;}
+  .standings td.pos{font-size:14px;}
+  .qbadge{font-size:9px; padding:2px 5px; margin-left:4px;}
+  .podium-card .pname{font-size:14px;}
+  .podium-card .medal{font-size:24px;}
+  .fl-card .ftitles{font-size:13px;}
+  .profile-top h1{font-size:26px;}
+  .micro-winner{font-size:19px;}
+  .country-title{font-size:17px;}
+  .banner{font-size:13px; padding:10px 12px;}
+  .selector-top{gap:8px;}
+  .searchbox{width:100% !important;}
+  .godlevel-teams-grid{grid-template-columns:1fr 1fr;}
+  .palmares-grid{grid-template-columns:repeat(4, 1fr); gap:6px;}
+  .palm-card{padding:6px;}
+  .palm-card .pthumb{margin-bottom:5px;}
+  .palm-card .ptitle{font-size:9px; line-height:1.15;}
+  .palm-card .pcount{font-size:14px;}
+  .h2h-compare{padding:14px 6px; gap:5px;}
+  .h2h-avatar{width:44px; height:44px; font-size:18px;}
+  .h2h-name{font-size:11px;}
+  .h2h-score{gap:4px;}
+  .h2h-score-num{font-size:23px;}
+  .h2h-vs{font-size:9.5px;}
+  .h2h-extremes{grid-template-columns:1fr; gap:8px;}
+}
+@media(max-width:360px){
+  .godlevel-teams-grid{grid-template-columns:1fr;}
+  .navtabs{gap:2px;}
+  .navtab{padding:6px 8px; font-size:12px;}
+}
+
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" href="{{asset:favicon.png}}">
+<title>FMS CEO</title>
+<style>
+{{include:css/01-fuentes.css}}
+{{include:css/02-base.css}}
+{{include:css/03-topbar.css}}
+{{include:css/04-layout.css}}
+{{include:css/05-ligas-y-cuadros.css}}
+{{include:css/06-freestylers.css}}
+{{include:css/07-historial.css}}
+{{include:css/08-movil.css}}
+{{include:css/09-anadidos.css}}
+{{include:css/10-red-bull.css}}
+{{include:css/11-jornada-fms.css}}
+{{include:css/12-patrocinadores-streamers.css}}
+{{include:css/13-animacion-calendario.css}}
+{{include:css/14-celebraciones.css}}
+{{include:css/15-estilos-freestyle.css}}
+{{include:css/16-x-y-speakers.css}}
+</style>
+</head>
+<body>
+<div id="topbar"></div>
+<div id="app" class="wrap"></div>
+<div id="modalRoot"></div>
+<input type="file" id="poolFileInput" accept="application/json" style="display:none" onchange="importPoolFile(event)">
+<input type="file" id="gameFileInput" accept="application/json" style="display:none" onchange="importGameFile(event)">
+<input type="file" id="imgFileInput" accept="image/*" style="display:none" onchange="onImageFile(event)">
+<script>
+{{include:js/00-imagenes.js}}
+{{include:js/01-datos.js}}
+{{include:js/02-estado.js}}
+{{include:js/03-calendario.js}}
+{{include:js/04-pretemporada.js}}
+{{include:js/05-ligas.js}}
+{{include:js/06-simulacion.js}}
+{{include:js/07-partida.js}}
+{{include:js/08-render.js}}
+{{include:js/09-red-bull.js}}
+{{include:js/10-espectaculo-red-bull.js}}
+{{include:js/11-batallas-fms.js}}
+{{include:js/12-patrocinadores.js}}
+{{include:js/13-streamers.js}}
+{{include:js/14-under.js}}
+{{include:js/15-world-series.js}}
+{{include:js/16-eventos-unicos.js}}
+{{include:js/17-animacion-calendario.js}}
+{{include:js/18-celebraciones.js}}
+{{include:js/19-init.js}}
+{{include:js/20-eleccion-enfrentamientos.js}}
+{{include:js/21-x-line-up.js}}
+{{include:js/22-speakers.js}}
+{{include:js/23-x-enfrentamientos.js}}
+{{include:js/24-x-campeon.js}}
+{{include:js/25-creador-y-ajustes.js}}
+</script>
+</body>
+</html>
