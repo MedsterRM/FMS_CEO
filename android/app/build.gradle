@@ -1,0 +1,37 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.medster.fmsceo'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.medster.fmsceo'
+        minSdk 24
+        targetSdk 34
+        versionCode 6
+        versionName '1.2'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // index.html pesa ~5 MB: que no lo comprima para que cargue rápido
+    androidResources {
+        noCompress 'html'
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.13.1'
+}

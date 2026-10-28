@@ -1,7 +1,7 @@
 {
   "name": "fms-ceo",
   "productName": "FMS CEO",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Juego de gestión de batallas de freestyle hecho por fans. Gratuito y sin ánimo de lucro.",
   "author": "Medster (@MedsterRM)",
   "main": "main.js",
