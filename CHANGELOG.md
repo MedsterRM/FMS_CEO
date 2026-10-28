@@ -1,5 +1,14 @@
 # Novedades
 
+## 1.2.1
+- Calendario automático: con 11 jornadas y FMS Under ya cabe siempre la FMS Under al final de cada liga.
+- En "Ligas" sale bien el número de competidores en el formato de 11 jornadas (x/12).
+- El Vida o muerte respeta que no se pueda fichar a extranjeros sin la primera estrella.
+- Las etiquetas de "Pedido por la comunidad" / "No lo quieren" solo salen por lo que pasa en tu partida.
+- Torreth Data con foto y hashtag "#FMS País".
+- El resumen de temporada ya no mezcla batallas de Red Bull con las de las FMS.
+- En el historial se puede ver el cuadro de la FMS Internacional de cada temporada.
+
 ## 1.2
 - Más de 470 freestylers (packs nuevos de España, Argentina, México, Chile, Perú y Centroamérica) y más de 180 tuiteros.
 - Nuevas competiciones Under: BDM nacionales (el campeón va a la BDM Internacional, que pasa a final de temporada), Copa Federación y ligas under de cada país. Se pueden saltar y muestran los puntos de ascenso.
