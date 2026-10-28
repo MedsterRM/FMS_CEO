@@ -4577,7 +4577,7 @@ function fmData(){ const s=cur(); const L=s.leagues[SHOW.key]; const base=L.roun
   o0.forEach(([i,h])=>{ const m=base[i]; if(m && m.result && !m.recup) list.push([m,h]); });
   const round=list.map(x=>x[0]); const ord=list.map((x,i)=>[i,x[1]]);
   return {s, L, round, ord}; }
-function fmStage(){ return document.getElementById('fmStage'); }
+function fmStage(){ return document.getElementById('fmStage') || document.createElement('div'); }   // si se cierra el show a mitad, no rompe
 function fmK(){ return shSpeed().k; }
 function fmAlive(tok){ return SHOW && SHOW.kind==='fms' && SHOW.tok===tok; }
 function fmSkip(){ if(!SHOW) return; SHOW.tok++; SHOW.nextRes=null; fmSkipBtn(false); fmSummary(); }
@@ -4592,12 +4592,16 @@ function countUp(el, from, to, ms, fmt){
 function fmFace(id, cls){ const f=fby(id); return `<span class="fm-face ${cls||''}" style="${avatarDivStyle(f)}">${avatarContent(f)}</span>`; }
 async function fmRun(tok){
   const {L, round, ord}=fmData(); const k=fmK;
+  // Vida o muerte: en el cartel no se desvela quién lo ha ganado (sale como "Ganador del Vida o muerte")
+  const poW={}; if(SHOW.j===0 && !SHOW.replay) poList(L).forEach(P=>{ if(P.done && P.winner && P.winner===P.b) poW[P.b]=P; });
+  const cSide=(m,id,r)=> (!m.po && poW[id]) ? (r ? `<span class="fm-cn r">Ganador del V/M</span><span class="fm-face" style="display:inline-flex;align-items:center;justify-content:center;font-weight:900;background:#2a2a33">?</span>` : `<span class="fm-face" style="display:inline-flex;align-items:center;justify-content:center;font-weight:900;background:#2a2a33">?</span><span class="fm-cn">Ganador del V/M</span>`)
+    : (r ? `<span class="fm-cn r">${fnameH(id)}</span>${fmFace(id)}` : `${fmFace(id)}<span class="fm-cn">${fnameH(id)}</span>`);
   // 1. intro
   fmStage().innerHTML=`<div class="fm-intro"><img src="${LOGOS[SHOW.key]}" alt=""><div class="fm-intro-small">Empieza la</div><div class="fm-intro-big">Jornada ${SHOW.j+1}</div></div>`;
   await shWait(3200*k()); if(!fmAlive(tok)) return;
   // 2. cartel, de menos a más hype
   fmStage().innerHTML=`<div class="fm-lineup"><div class="fm-lineup-t">Cartel de la jornada <small>de menos a más nivel</small></div>${ord.map(([i,hs],n)=>{ const m=round[i];
-    return `<div class="fm-card" id="fmCard${n}"><span class="fm-n">${n+1}</span>${fmFace(m.a)}<span class="fm-cn">${fnameH(m.a)}</span><span class="fm-cvs">VS</span><span class="fm-cn r">${fnameH(m.b)}</span>${fmFace(m.b)}<span class="fm-hs">${m.po?'<b class="fm-ex po">VIDA O MUERTE</b> ':(m.ex?'<b class="fm-ex">EXHIBICIÓN</b> ':'')}🔥 ${Math.round(hs)}</span></div>`; }).join('')}</div>`;
+    return `<div class="fm-card" id="fmCard${n}"><span class="fm-n">${n+1}</span>${cSide(m,m.a,false)}<span class="fm-cvs">VS</span>${cSide(m,m.b,true)}<span class="fm-hs">${m.po?'<b class="fm-ex po">VIDA O MUERTE</b> ':(m.ex?'<b class="fm-ex">EXHIBICIÓN</b> ':'')}🔥 ${Math.round(hs)}</span></div>`; }).join('')}</div>`;
   for(let n=0;n<ord.length;n++){ await shWait(950*k()); if(!fmAlive(tok)) return; document.getElementById('fmCard'+n)?.classList.add('in'); }
   await shWait(2200*k()); if(!fmAlive(tok)) return;
   // 3. batallas
@@ -4901,7 +4905,11 @@ const MFU_ES=['Zasko','Sweet Pain','Arkano','Davisito','Sara Socas','Navas','Mr.
 const MFU_INT=['Teorema','Ricto','Bigtamina','Anubis','Scub','Replik','Klan','Lit Killah','Acru','Abel','Kodigo','MP','CTZ','Issy','Sophia','KG','Skill','Necia','Rasta'];
 const UNDER_EXC = ['Teorema','El Menor','Acru','Dyse','Alek','Segrelles','Dalia','Mr. Ego','Kodigo','HDR','Abel','Mecha','Naista','MP','Stick','Replik','NQP','Fat N','Dani VK','Tirpa','Anubis','Bélico','Jesse Pungaz','Exe','Sophia','Kmbra','Nez','Rodamiento','Joqerr','Fabiuki','CTZ','Tata','Fat Tony','Potencia'];
 const UNDER_RARE = ['El Menor','Acru'];
-function ulogo(key){ const d=typeof udef==='function' && udef(key); const k=(d && d.logo) || key; return (typeof EXTRA_IMG!=='undefined' && EXTRA_IMG[k]) || null; }
+function ulogo(key){ const d=typeof udef==='function' && udef(key); const k=(d && d.logo) || key; return (typeof EXTRA_IMG!=='undefined' && EXTRA_IMG[k]) || (d && d.u2 ? ubadge(d) : null); }
+// competiciones sin logo propio: una insignia con sus siglas (antes salía el logo de Red Bull en el sorteo)
+function ubadge(d){ const t=String(d.short||'').slice(0,4); const fs=t.length<=2?52:(t.length===3?42:34);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="24" fill="${d.color||'#333'}"/><text x="64" y="64" dy=".35em" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="${fs}" fill="#fff">${t}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); }
 function udef(key){ return key===MFU.key ? MFU : (UNDER_DEFS.find(d=>d.key===key) || UNDER2_DEFS.find(d=>d.key===key)); }
 /* ---- competiciones under nuevas: cualquier día de la semana, menos hype y menos puntos de ascenso; solo si su FMS está activa ---- */
 const ASC_UNDER2=[250,500,150,100];   // final, semis, cuartos, octavos
