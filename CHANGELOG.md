@@ -9,6 +9,8 @@
 - El resumen de temporada ya no mezcla batallas de Red Bull con las de las FMS.
 - En el historial se puede ver el cuadro de la FMS Internacional de cada temporada.
 - Formato de 5 jornadas: ganar en réplica a un extraplayer da 2 puntos (y perder en réplica, 1), como en el resto de batallas.
+- Las competiciones Under sin logo propio ya no muestran el de Red Bull.
+- El cartel de la J1 no desvela quién gana el Vida o muerte.
 
 ## 1.2
 - Más de 470 freestylers (packs nuevos de España, Argentina, México, Chile, Perú y Centroamérica) y más de 180 tuiteros.
