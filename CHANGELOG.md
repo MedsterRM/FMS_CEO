@@ -6,6 +6,11 @@
 - Modo Pandemia: Errecé ya no se va a Bali.
 - El número de versión se ve un poco más grande.
 - Nuevo tutorial para jugar en iPhone / iPad: [IOS.md](IOS.md).
+- Twitter: Info Freestyle / McNoticias siempre es el último tuit del line up, también con Vida o muerte.
+- El anuncio de enfrentamientos de la J1 incluye el Vida o muerte (y el otro cruce sale como "Ganador del V/M").
+- El anuncio del Team RQ sale antes de la primera competición en la que influye (Under o Red Bull nacional).
+- Selector de cruces: los rivales que no cuadran con el resto de la jornada se marcan con un contorno rojo.
+- Calendario automático: las jornadas se reparten por todo el año (desde enero) en vez de acumularse al final.
 
 ## 1.2.1
 - Calendario automático: con 11 jornadas y FMS Under ya cabe siempre la FMS Under al final de cada liga.
