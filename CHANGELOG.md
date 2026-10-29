@@ -15,6 +15,7 @@
 - El formato de la temporada (5, 9 u 11 jornadas) queda fijado al empezarla y se repara en partidas guardadas.
 - El jurado del Internacional ya no puede quedarse bloqueado; si la ventana del staff falla, se elige automáticamente.
 - Los que rechazan la FMS también pueden bajarse del Vida o muerte (el de tu line up se queda).
+- En móvil, el cuadro de la FMS Internacional (y de Red Bull y las Under) cabe en pantalla y los botones para simular ya no quedan fuera.
 
 ## 1.2
 - Más de 470 freestylers (packs nuevos de España, Argentina, México, Chile, Perú y Centroamérica) y más de 180 tuiteros.
