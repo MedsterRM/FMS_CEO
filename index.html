@@ -1724,7 +1724,7 @@ tr.pot td{background:rgba(255,36,54,0.06);}
 .db-flags{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 2px;} .db-flags label{display:flex !important;flex-direction:row !important;white-space:nowrap;width:auto !important;margin:0 !important;align-items:center;gap:6px;font-weight:700;font-size:13px;cursor:pointer;}
 .db-flags input{width:auto !important;margin:0;}
 .db-flag-ic{width:18px;height:18px;border-radius:4px;object-fit:cover;}
-#verTag{position:fixed;right:6px;bottom:4px;z-index:2147483000;color:#fff;font-size:10px;font-weight:700;opacity:.75;pointer-events:none;letter-spacing:.3px;font-family:inherit;text-shadow:0 0 3px rgba(0,0,0,.8);padding-bottom:env(safe-area-inset-bottom,0);padding-right:env(safe-area-inset-right,0);}
+#verTag{position:fixed;right:7px;bottom:5px;z-index:2147483000;color:#fff;font-size:12.5px;font-weight:700;opacity:.75;pointer-events:none;letter-spacing:.3px;font-family:inherit;text-shadow:0 0 3px rgba(0,0,0,.8);padding-bottom:env(safe-area-inset-bottom,0);padding-right:env(safe-area-inset-right,0);}
 </style>
 </head>
 <body>
@@ -5199,7 +5199,7 @@ const UQ_UNAV = {   // no pueden venir a la jornada (lead: días de antelación 
   'Frescolate':{p:0.05, lead:9, notFirst:true, why:'hizo un backflip en la pasada jornada, le salió mal y te presenta la baja laboral para esta'},
   'Ricto':{p:0.20, first:false, why:'no le han dado el día libre en el trabajo'}, 'Arkano':{p:0.25, first:true, why:'coincide con su participación en Supervivientes'},
   'Mowlihawk':{p:0.15, notLast:true, why:'tiene que grabar un Batmowli'},
-  'Errecé':{p:0.10, first:false, why:'se ha ido a Bali a reflexionar sobre la vida'},
+  'Errecé':{p:0.10, first:false, noPandemic:true, why:'se ha ido a Bali a reflexionar sobre la vida'},   // en Pandemia no se puede viajar
   'Éxodo Lirical':{p:0.20, first:false, why:'no puede viajar: la visa no le permite entrar al país'},
 };
 function uqPush(s, ev){ if(!s.uq) s.uq=[]; ev.id=uid('u'); ev.done=false; s.uq.push(ev); return ev; }
@@ -5355,7 +5355,7 @@ function uqAuto(s, ev){
 function uqCheckUnavailable(s, L, nd, lead){
   const round=L.rounds[L.played]; if(!round) return; lead=lead||5;
   const epIds=new Set(round.filter(m=>m.ep).map(m=>m.a));   // quien tiene batalla contra un extraplayer esa jornada nunca falta
-  round.forEach((m,mi)=>{ if(m.postponed || m.ep) return; [m.a,m.b].forEach(id=>{ if(epIds.has(id)) return; const f=fby(id); const u=f&&UQ_UNAV[f.name]; if(!u || (u.lead||5)!==lead || (u.first && L.played!==0) || (u.notFirst && L.played===0) || (u.notLast && L.played>=nJ(L.key)-1)) return;
+  round.forEach((m,mi)=>{ if(m.postponed || m.ep) return; [m.a,m.b].forEach(id=>{ if(epIds.has(id)) return; const f=fby(id); const u=f&&UQ_UNAV[f.name]; if(!u || (u.noPandemic && isPandemic()) || (u.lead||5)!==lead || (u.first && L.played!==0) || (u.notFirst && L.played===0) || (u.notLast && L.played>=nJ(L.key)-1)) return;
     if(round.some(x=>x.postponed)) return;
     let why = typeof u.why==='function' ? u.why() : u.why;
     if(u.opts){ const used=new Set((s.uq||[]).filter(x=>x.type==='unavail' && x.fid===id).map(x=>x.why)); const left=u.opts.filter(o=>!used.has(o)); if(!left.length) return; why=pick(left); }
@@ -5374,7 +5374,7 @@ function uqSetUnavail(evId, guestId, day, silent){
   if(!guestId || day==null){ toast('Elige el invitado de la exhibición y la fecha de la recuperativa.'); return; }
   const L=s.leagues[ev.key]; const g=fby(guestId);
   if(!silent && uqExhibRefuses(s, g)){ toast(refuseMsg(g,'hacer una exhibición')); state.ui.uqGuest=null; showUQ(ev); return; }
-  if(exNoPair(ev.rival, guestId)){ if(silent) return; toast('Papo y La Joaqui no quieren hacer una exhibición entre ellos.'); state.ui.uqGuest=null; showUQ(ev); return; }
+  if(exNoPair(ev.rival, guestId)){ if(silent) return; toast(exNoPairMsg(ev.rival, guestId)); state.ui.uqGuest=null; showUQ(ev); return; }
   const cost=exhibCost(g, ev.key);
   state.company.money-=cost; s.fin.salaries+=cost; state.ui.uqGuest=null; state.ui.uqDay=null; state.ui.uqQ='';
   if(!L.fexhib) L.fexhib={}; L.fexhib[ev.j]={a:ev.rival, b:guestId, missing:ev.fid, cost, used:exOfferUse([g])};
@@ -5638,7 +5638,7 @@ const EXH_UNKNOWN=60, EXH_FAMOUS=80;   // fama por debajo = desconocido · fama 
 function exhibCost(f, key){ const y=cur()&&cur().year; const disc=(exOfferActive(f,y) && UQ_REFUSE[f.name]) ? (UQ_REFUSE[f.name].exDisc||0) : 0; return Math.max(100, Math.round(contractCost(f,key)*0.025*(1-disc)*(1-fxVal(key,'exfee'))/100)*100); }
 function exhibBusy(s){ const set=new Set(); s.activeKeys.forEach(k=>{ const L=s.leagues[k]; Object.entries(L.exhib||{}).forEach(([j,x])=>{ if(+j>=L.played){ set.add(x.a); set.add(x.b); } }); }); return set; }
 function isJudgeOf(s, id, key){ const f=fby(id); return !!(f && key && jdList(s,key).some(n=>nrm(n)===nrm(f.name))); }   // es jurado de ESA liga
-function exhibEligible(s, key){ const busy=exhibBusy(s); const own=new Set(key&&s.leagues[key]?s.leagues[key].competitors:[]); return state.freestylers.filter(f=>!own.has(f.id) && !busy.has(f.id) && !(key ? isJudgeOf(s,f.id,key) : isJudgeId(s,f.id)) && !isSpeakerId(s,f.id)); }
+function exhibEligible(s, key){ const busy=exhibBusy(s); const own=new Set(key&&s.leagues[key]?s.leagues[key].competitors:[]); const pf=isPandemic() && key; return state.freestylers.filter(f=>!own.has(f.id) && !busy.has(f.id) && !(pf && isForeignTo(key,f)) && !(key ? isJudgeOf(s,f.id,key) : isJudgeId(s,f.id)) && !isSpeakerId(s,f.id)); }
 function renderExhib(s, L, key, j){
   const ex=L.exhib && L.exhib[j];
   if(ex && ex.m && ex.m.result){ const m=ex.m, r=m.result, p=ptbOf(m);
@@ -5667,7 +5667,8 @@ function exPick(key, id){ const a='exA_'+key, b='exB_'+key;
 function organizeExhib(key){
   const s=cur(); const L=s.leagues[key]; const a=state.ui['exA_'+key], b=state.ui['exB_'+key];
   if(!a||!b||a===b) return; const el=new Set(exhibEligible(s, key).map(f=>f.id)); if(!el.has(a)||!el.has(b)){ toast('Alguno de los dos ya no está disponible.'); return; }
-  if(exNoPair(a,b)){ toast('Papo y La Joaqui no quieren hacer una exhibición entre ellos.'); return; }
+  if(exNoPair(a,b)){ toast(exNoPairMsg(a,b)); return; }
+  if(isPandemic() && [a,b].some(id=>isForeignTo(key,fby(id)))){ toast('En Pandemia no se puede viajar: las exhibiciones son solo con competidores del país de la liga.'); return; }
   for(const id of [a,b]){ if(uqExhibRefuses(s, fby(id))){ toast(refuseMsg(fby(id),'hacer una exhibición')); return; } }
   const cost=exhibCost(fby(a),key)+exhibCost(fby(b),key);
   if(state.company.money<cost){ toast(`No te llega: la exhibición cuesta ${money(cost)}.`); return; }
@@ -8939,8 +8940,10 @@ function waInit(ev){ if(ev.chats) return; const s=cur(); const f=fby(ev.fid); co
   else if(ev.type==='ortiz'){ msgs=[S(`📰 Ortiz le ganó a Gazir y Gazir le ha despedido como editor de sus vídeos.`), T('Jefe, me he quedado sin el curro de editor por ganarle a Gazir 😅'), T(`Necesito que me subáis el sueldo un 15% (${money(ortizExtra(s,ev))} más) para compensarlo.`)]; }
   else if(ev.type==='tension'){ msgs=[T('Tenemos que hablar.'), T(`Desde la batalla de ${ev.since||'la temporada pasada'} con ${fname(ev.rival)} la cosa está muy mal.`), T(`Yo con ${fname(ev.rival)} no quiero compartir line up. Decide: entre él y yo.`)]; }
   else if(ev.type==='jincho'){ msgs=[T('Jefe, tengo un problema serio…'), T('Me van a meter en prisión por un tema de sustancias.'), T(`Si la empresa me paga la fianza (${money(jinchoBail(s,ev))}) puedo seguir en ${liga}.`)]; }
-  else if(ev.type==='joaqui'){ msgs = (fby(ev.fid)||{}).name==='Papo' ? [T('Papo tiene que decirte una cosa.'), T('Papo no comparte line up con La Joaqui.'), T('O ella o Papo. Tú decides 🃏')]
-      : [T('Hola, te escribo por lo del line up.'), T(`No voy a competir en ${liga} si está Papo.`), T('Elige: o él o yo.')]; }
+  else if(ev.type==='joaqui'){ const rv=fname(ev.rival), el=isWoman(ev.rival)?'ella':'él';
+    msgs = (fby(ev.fid)||{}).name==='Papo' ? [T('Papo tiene que decirte una cosa.'), T(`Papo no comparte line up con ${rv}.`), T(`O ${el} o Papo. Tú decides 🃏`)]
+      : (fby(ev.fid)||{}).name==='Mr. Ego' ? [T('Oye, tenemos un problema.'), T(`Yo no comparto liga con ${rv}. Ni de coña.`), T(`O ${el} o yo, tú verás.`)]
+      : [T('Hola, te escribo por lo del line up.'), T(`No voy a competir en ${liga} si está ${rv}.`), T(`Elige: o ${el} o yo.`)]; }
   ev.chats=[{fid:ev.fid, msgs}]; ev.ci=0; }
 function waAfterFine(ev, fine, angry, f, v, pct, L){ waInit(ev); const M=ev.chats[0].msgs; const amt=Math.round((L.contracts[ev.fid]||0)*pct);
   if(fine){ M.push({w:'me', t:`Esto no puede volver a pasar. Te multamos con el ${Math.round(pct*100)}% de tu sueldo (${money(amt)}).`});
@@ -9008,10 +9011,14 @@ function poRefuseRoll(s){ if(state.company.infinite) return; natKeys(s).forEach(
     uqPush(s, {day:s.day, type:'porefuse', key:k, fid:P.b, rival:P.a, kind:r.kind||'no'}); addLog(s, s.day, `⚔️ ${f.name} se baja del Vida o muerte de ${ldef(k).name}: ${fname(P.a)} se queda en la liga.`, 'bad'); }); }); }
 
 /* ---------- Papo y La Joaqui no comparten line up (día 3 de la temporada; no en sandbox) ---------- */
-function exNoPair(a, b){ const n=[fby(a),fby(b)].map(f=>f&&f.name); return n.includes('Papo') && n.includes('La Joaqui'); }
-function joaquiSeasonStart(s){ if(isSandbox()) return; const pa=state.freestylers.find(f=>f.name==='Papo'), jq=state.freestylers.find(f=>f.name==='La Joaqui'); if(!pa || !jq) return;
-  s.activeKeys.forEach(k=>{ const L=s.leagues[k]; if(!L.competitors.includes(pa.id) || !L.competitors.includes(jq.id)) return;
-    const sp=Math.random()<0.5?pa.id:jq.id; uqPush(s, {day:s.day+3, type:'joaqui', key:k, fid:sp, rival:sp===pa.id?jq.id:pa.id}); }); }
+// parejas que no comparten line up ni hacen exhibiciones entre sí
+var NO_PAIRS=[['Papo','La Joaqui'],['Mr. Ego','Swit Eme']];
+function exNoPair(a, b){ const n=[fby(a),fby(b)].map(f=>f&&f.name); return NO_PAIRS.some(([x,y])=>n.includes(x) && n.includes(y)); }
+function exNoPairMsg(a, b){ return `${fname(a)} y ${fname(b)} no quieren hacer una exhibición entre ellos.`; }
+function joaquiSeasonStart(s){ if(isSandbox()) return;
+  NO_PAIRS.forEach(([x,y])=>{ const pa=state.freestylers.find(f=>!f.custom && f.name===x), jq=state.freestylers.find(f=>!f.custom && f.name===y); if(!pa || !jq) return;
+    s.activeKeys.forEach(k=>{ const L=s.leagues[k]; if(!L.competitors.includes(pa.id) || !L.competitors.includes(jq.id)) return;
+      const sp=Math.random()<0.5?pa.id:jq.id; uqPush(s, {day:s.day+3, type:'joaqui', key:k, fid:sp, rival:sp===pa.id?jq.id:pa.id}); }); }); }
 function uqJoaqui(id, choice, silent){ const s=cur(); const ev=(s.uq||[]).find(x=>x.id===id); if(!ev || ev.done) return; const L=s.leagues[ev.key]; const f=fby(ev.fid), o=fby(ev.rival); waInit(ev); const M=ev.chats[0].msgs; const liga=ldef(ev.key).name;
   if(choice==='swap'){ M.push({w:'me', t:`Entendido. ${o.name} no estará esta temporada.`}, {w:'them', t: f.name==='Papo' ? 'Papo sabía que lo entenderías 😎' : 'Gracias, de verdad 🙏'});
     uqRemove(s, L, o.id); uqBan(s, o, `por sacarle de ${liga} por ${f.name}`); ev.after='replace';
@@ -9159,7 +9166,7 @@ var TW_CHOUT={
 };
 
 /* ---- versión del juego (esquina inferior derecha) ---- */
-var GAME_VERSION='1.2.1';
+var GAME_VERSION='1.2.2';
 (function(){ try{ const v=document.createElement('div'); v.id='verTag'; v.textContent=GAME_VERSION; document.body.appendChild(v); }catch(e){} })();
 </script>
 </body>
