@@ -11,6 +11,10 @@
 - Formato de 5 jornadas: ganar en réplica a un extraplayer da 2 puntos (y perder en réplica, 1), como en el resto de batallas.
 - Las competiciones Under sin logo propio ya no muestran el de Red Bull.
 - El cartel de la J1 no desvela quién gana el Vida o muerte.
+- Khan siempre pierde y saca menos PTB que su rival.
+- El formato de la temporada (5, 9 u 11 jornadas) queda fijado al empezarla y se repara en partidas guardadas.
+- El jurado del Internacional ya no puede quedarse bloqueado; si la ventana del staff falla, se elige automáticamente.
+- Los que rechazan la FMS también pueden bajarse del Vida o muerte (el de tu line up se queda).
 
 ## 1.2
 - Más de 470 freestylers (packs nuevos de España, Argentina, México, Chile, Perú y Centroamérica) y más de 180 tuiteros.
