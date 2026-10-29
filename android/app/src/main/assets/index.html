@@ -1489,11 +1489,11 @@ html.cel-open, html.cel-open body{overflow:hidden !important; overscroll-behavio
 .mvp-rank td small{white-space:nowrap;}
 /* jornada FMS en móvil horizontal: la tabla + MVP caben enteros y "Continuar" va abajo a la derecha, sin franja negra encima */
 @media (max-height:600px){
-  #rbShow .rbs.fms{overflow:hidden;}
-  #rbShow .rbs.fms .fm-stage{overflow-y:auto; overflow-x:hidden; min-height:0; scrollbar-width:none;}
-  #rbShow .rbs.fms .fm-stage::-webkit-scrollbar{display:none;}
-  #rbShow .rbs.fms .rbs-bottom{position:static; background:none; padding-top:2px; margin-top:2px; justify-content:flex-end; flex:none;}
-  #rbShow .rbs.fms .rbs-bottom:empty{display:none;}
+  #rbShow .rbs.fms:not(.ko){overflow:hidden;}
+  #rbShow .rbs.fms:not(.ko) .fm-stage{overflow-y:auto; overflow-x:hidden; min-height:0; scrollbar-width:none;}
+  #rbShow .rbs.fms:not(.ko) .fm-stage::-webkit-scrollbar{display:none;}
+  #rbShow .rbs.fms:not(.ko) .rbs-bottom{position:static; background:none; padding-top:2px; margin-top:2px; justify-content:flex-end; flex:none;}
+  #rbShow .rbs.fms:not(.ko) .rbs-bottom:empty{display:none;}
   .fm-mvpwrap{margin:0 auto; align-items:center;}
   .fm-mvpwrap .fm-table-side .fm-lineup-t{font-size:16px !important; margin:0 0 2px;}
   .fm-mvpwrap.split .fm-st th{padding:1px 6px; font-size:10px;}
@@ -4183,7 +4183,7 @@ function shFit(){
   const wrap=document.getElementById('shWrap'); const st=shStage(); if(!wrap||!st) return;
   const top=wrap.getBoundingClientRect().top + (document.getElementById('rbShow').querySelector('.rbs').scrollTop||0);
   const D=shDims();
-  const k = (shPortrait() || window.innerHeight<520) ? Math.min(wrap.clientWidth/D.W, 1.15) : Math.min(wrap.clientWidth/D.W, Math.max(0.3,(window.innerHeight-top-96)/D.H), 1.3);
+  const k = shPortrait() ? Math.min(wrap.clientWidth/D.W, 1.15) : Math.min(wrap.clientWidth/D.W, Math.max(0.3,(window.innerHeight-top-(window.innerHeight<520?64:96))/D.H), window.innerHeight<520?1.15:1.3);   // en móvil horizontal el cuadro cabe entero y los botones quedan a la vista
   st.style.transform=`translateX(-50%) scale(${k})`; wrap.style.height=Math.ceil(D.H*k)+'px';
 }
 function shSpeedBtns(){
@@ -4220,7 +4220,7 @@ function openRBShow(key){
   let root=document.getElementById('rbShow');
   if(!root){ root=document.createElement('div'); root.id='rbShow'; document.body.appendChild(root); }
   themeEl(root, key);
-  root.innerHTML=`<div class="rbs rbs-enter ${key===INTL.key?'fms':''}" ${isUnder(key)||isFU(key)?`style="background:radial-gradient(ellipse at top, color-mix(in srgb, ${isFU(key)?ldef(key.slice(3)).badge:udef(key).color} 55%, #07070c) 0%, #07070c 62%)"`:''} role="dialog" aria-label="${showName(key)}">
+  root.innerHTML=`<div class="rbs rbs-enter ko ${key===INTL.key?'fms':''}" ${isUnder(key)||isFU(key)?`style="background:radial-gradient(ellipse at top, color-mix(in srgb, ${isFU(key)?ldef(key.slice(3)).badge:udef(key).color} 55%, #07070c) 0%, #07070c 62%)"`:''} role="dialog" aria-label="${showName(key)}">
     <div class="rbs-top"><img class="rb-mark sm ${key===INTL.key?'fm-logo':''}" src="${showLogo(key)}" alt=""><div style="min-width:0"><div class="rbs-title">${showName(key)} ${s.year}</div>
       <div class="rbs-sub">${fmtDay(s.year,ev.day??ev.date)}${SHOW.sede?' · 📍 '+SHOW.sede+' (locales +'+LOCAL_BONUS+' de nivel)':''} · cruces por sorteo</div></div>
       <span class="top-spacer"></span><button class="btn small ghost x2-btn ${state.ui.x2?'on':''}" id="shX2" aria-pressed="${state.ui.x2?'true':'false'}" title="Doble de velocidad" onclick="shToggleX2()">X2</button><button class="btn small ghost" onclick="shSkip()">Saltar</button></div>
