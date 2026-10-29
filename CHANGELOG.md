@@ -1,5 +1,12 @@
 # Novedades
 
+## 1.2.3
+- Papo vs La Joaqui y Mr. Ego vs Swit Eme tienen un 25% más de visitas por la polémica.
+- Formato de 5 jornadas viniendo de 11: los dos Vida o muerte salen como los 2 extraplayers fijos de la J1.
+- Los competidores fichados en una FMS que no es la de su país ya no suman ni salen en el ranking de ascenso.
+- Ibai cobra un 200% más y Guanyar un 100% más.
+- Partidas de versiones sin jurados: el staff del Internacional ya no se queda bloqueado (si no hay jurados, no se piden).
+
 ## 1.2.2
 - Nuevo evento: Mr. Ego y Swit Eme no quieren compartir liga (como Papo y La Joaqui), y tampoco hacen exhibiciones entre ellos.
 - Modo Pandemia: no se pueden hacer exhibiciones con competidores extranjeros.
