@@ -1,5 +1,12 @@
 # Novedades
 
+## 1.2.2
+- Nuevo evento: Mr. Ego y Swit Eme no quieren compartir liga (como Papo y La Joaqui), y tampoco hacen exhibiciones entre ellos.
+- Modo Pandemia: no se pueden hacer exhibiciones con competidores extranjeros.
+- Modo Pandemia: Errecé ya no se va a Bali.
+- El número de versión se ve un poco más grande.
+- Nuevo tutorial para jugar en iPhone / iPad: [IOS.md](IOS.md).
+
 ## 1.2.1
 - Calendario automático: con 11 jornadas y FMS Under ya cabe siempre la FMS Under al final de cada liga.
 - En "Ligas" sale bien el número de competidores en el formato de 11 jornadas (x/12).
