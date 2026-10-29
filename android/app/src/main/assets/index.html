@@ -2056,6 +2056,7 @@ function load(n){
       if(last) Object.values(s.leagues||{}).forEach(L=>{ if(!L.finished) L.manual=true; }); });
     syncRealPool(); mergeCustoms();
     { const ls=state.seasons[state.seasons.length-1]; if(ls){ Object.values(ls.leagues||{}).forEach(L=>{ if(L.judges) L.judges=L.judges.filter(n=>jdBy(n)); }); if(ls.intl && ls.intl.judges) ls.intl.judges=ls.intl.judges.filter(n=>jdBy(n)); } }   // jurados creados que ya se borraron
+    state.seasons.forEach(fmtRepair);
     { const ls=state.seasons[state.seasons.length-1]; if(ls) rbSanitize(ls); if(ls && ls.phase==='live' && !ls.under2){ try{ under2Generate(ls, ls.day+1); }catch(e){ console.error(e); } } }
     setTimeout(()=>{ try{ offerOfficialMerge(); }catch(e){ console.error(e); } }, 400);
     return true;
@@ -2422,6 +2423,11 @@ function styleVariety(ids){
   const bonus = rep.length ? -25 : Math.round(Math.max(0,n-3)*2.5);
   return {n, max, rep, bonus, counts:c};
 }
+// una temporada ya empezada conserva su formato (5 / 9 / 11 jornadas) aunque algo lo hubiera cambiado: se deduce de las jornadas ya creadas
+function fmtRepair(s){ if(!s || s.phase==='pre') return; if(s.formatLocked){ s.format=s.formatLocked; return; }
+  const n=natKeys(s).map(k=>(s.leagues[k].rounds||[]).length).find(x=>x>0); if(!n) return;
+  if(n===WS_JORNADAS) s.format='ws'; else if(n===11) s.format='f11'; else if(s.format==='ws'||s.format==='f11') s.format='short';
+  s.formatLocked=s.format; }
 function startSeason(){
   const s=cur(); const issues=preseasonIssues(s);
   if(issues.length){ toast(issues[0]); return; }
@@ -2447,7 +2453,7 @@ function startSeason(){
     L.lastEventDay = -14; L.played=0; L.finished=false;
   });
   s.lastFmsDay=-14; jdSeasonStart(s);
-  s.phase='live'; s.day=0; state.ui.calMonth=null;
+  s.phase='live'; s.day=0; state.ui.calMonth=null; s.formatLocked=s.format;   // el formato ya no puede cambiar en toda la temporada
   try{ teamRQSelect(s); }catch(e){ console.error(e); }
   rbDraw(s);
   try{ under2Generate(s, 0); }catch(e){ console.error(e); }
@@ -2747,7 +2753,7 @@ function advance(mode){
       if(state.view.name==='calendar') state.ui.calMonth=monthOf(s.year,s.day);
       render(); openLineup(ev.key); return;
     }
-    if(ev && (ev.pause==='ispk' || ev.pause==='ijud')){ render(); state.ui.ispk=[]; state.ui.idj=null; state.ui.ijd=[]; showIntlStaff(); return; }
+    if(ev && (ev.pause==='ispk' || ev.pause==='ijud')){ render(); state.ui.ispk=[]; state.ui.idj=null; state.ui.ijd=[]; try{ showIntlStaff(); }catch(e){ console.error(e); intlJdAuto(s); intlSpkAuto(s); toast('Staff del Internacional elegido automáticamente.'); render(); } return; }
     if(ev && ev.pause==='replace'){ render(); showReplace(ev.key); return; }
     if(ev && ev.pause==='exhib'){
       if(state.view.name==='calendar') state.ui.calMonth=monthOf(s.year,s.day);
@@ -4409,6 +4415,9 @@ function simulateFMSBattle(m, lvB){
           if(fB && sb<sa+mg){ if(sb<sa){ const t=sa; sa=sb; sb=t; } if(sb<sa+mg){ if(sb+mg<=R.max) sb+=mg; else sa=Math.max(R.min, sa-mg); } } }
         { const sA=stS(A); if(sA && sA===stS(B)){ const dd=(fmt==='long'?6:2)*(sA>0?1:-1);   // Navas: dos Disonantes -> notas infladas; dos Ingenios -> notas hundidas
             sa=clamp(sa+dd, R.min, R.max); sb=clamp(sb+dd, R.min, R.max); } } }
+      { const kA=A.name==='Khan' && B.name!=='Khan', kB=B.name==='Khan' && A.name!=='Khan', st=fmt==='long'?1:0.5;   // Khan: todos los jueces le puntúan por debajo del rival
+        if(kA && sa>=sb){ const t=sa; sa=sb; sb=t; if(sa>=sb){ if(sb+st<=R.max) sb+=st; else sa=Math.max(R.min, sa-st); } }
+        if(kB && sb>=sa){ const t=sb; sb=sa; sa=t; if(sb>=sa){ if(sa+st<=R.max) sa+=st; else sb=Math.max(R.min, sb-st); } } }
       ra.push(sa); rb.push(sb); tA[j]+=sa; tB[j]+=sb;
     }
     s+=ra.map(x=>scoreChar(x*2)).join('')+rb.map(x=>scoreChar(x*2)).join('');
@@ -4425,6 +4434,7 @@ function simulateFMSBattle(m, lvB){
     aWins=ha>=3; h=aWins?[ha,5-ha]:[5-ha,ha];
   } else aWins=nA>nB;
   if(A.name==='Khan' && B.name!=='Khan') aWins=false; else if(B.name==='Khan' && A.name!=='Khan') aWins=true;
+  if(tiebreak && (A.name==='Khan')!==(B.name==='Khan')){ const hw=rint(3,5); h=aWins?[hw,5-hw]:[5-hw,hw]; }   // la réplica también la pierde Khan
   const W=aWins?A:B, Lo=aWins?B:A;
   m.d={s, v, h, e:2}; if(fmt==='long') m.d.f='L';
   m.result={winner:W.id, loser:Lo.id, tiebreak};
@@ -5200,6 +5210,7 @@ function uqSeasonStart(s){ try{ uqSnubs(s); }catch(e){ console.error(e); }
     if(Math.random()<p) uqPush(s, {day:s.day, type:r.papo?'papo':'refuse', key:k, fid:id, kind:r.kind||'no'}); }); });
   try{ uqTiredAbroad(s); }catch(e){ console.error(e); }
   try{ tensionSeasonStart(s); }catch(e){ console.error(e); }
+  try{ poRefuseRoll(s); }catch(e){ console.error(e); }
   try{ joaquiSeasonStart(s); }catch(e){ console.error(e); }
   try{ jinchoSeasonStart(s); }catch(e){ console.error(e); }
   try{ intlGovSeasonStart(s); }catch(e){ console.error(e); }
@@ -5283,6 +5294,7 @@ function uqApply(s, ev){
     R.forEach(m=>{ if(!m || !m.views) return; const b=m.views; m.views=Math.round(b*0.8); lost+=b-m.views; });
     const money0=Math.round(lost*VIEW_RATE*(1+djVal(ev.key,'ytmoney'))); state.company.money-=money0; s.fin.income-=money0; s.fin.views=(s.fin.views||0)-money0; L.income-=money0; ev.lost=lost; ev.loss=money0; ev.done=true; ev.show=true;
     addLog(s, ev.day, `${TECH_EV[ev.v][0]} ${TECH_EV[ev.v][1]} en la J${ev.j+1} de ${ldef(ev.key).short}: −20% de visitas (−${moneyK(money0)}).`, 'bad'); }
+  else if(ev.type==='porefuse'){ ev.done=true; ev.show=true; }
   else if(ev.type==='teamrq'){ const T=s.teamRQ; if(!T || !T.ids.length){ ev.done=true; ev.show=false; } else { ev.done=true; ev.show=true; T.shown=true; addLog(s, ev.day, `🔥 Team RQ: Rodrigo Quesada patrocina a ${T.ids.map(fname).join(', ')} esta temporada.`, 'gold'); } }
   else if(ev.type==='azecat'){ ev.done=true; ev.show=true; addLog(s, ev.day, `🎟️ Azuky agota las entradas en Ecatepec: +10 de nivel para ella en la J${ev.j+1}.`, 'good'); }
   else if(ev.type==='cdmx'){ ev.done=true; ev.show=true; addLog(s, ev.day, `🇲🇽 En Ciudad de México el público no dejó rapear a los extranjeros.${ev.skone?' Skone se libró.':''}`, 'bad'); }
@@ -5527,6 +5539,9 @@ function showUQ(ev){
   else if(ev.type==='tech'){ kick='📡 Directo'; title=TECH_EV[ev.v][2];
     body=`<p>${TECH_EV[ev.v][0]} ${TECH_EV[ev.v][1]} durante la J${ev.j+1} de ${esc(ldef(ev.key).name)} y mucha gente se fue del directo.</p>
       <p>La jornada tuvo <b class="neg-v">−20% de visitas</b> (${fmtViews(ev.lost||0)} menos · <b class="neg-v">−${money(ev.loss||0)}</b>).</p>`; }
+  else if(ev.type==='porefuse'){ kick='⚔️ Vida o muerte'; title=`${f.name} no jugará el Vida o muerte`;
+    body=`<p>${ev.kind==='streams'?`${nameH(f)} no puede por el calendario de sus streams`:ev.kind==='concert'?`${nameH(f)} no puede compaginarlo con sus conciertos`:ev.kind==='retired'?`${nameH(f)} está retirado de las batallas`:ev.kind==='melody'?`${nameH(f)} le perdió el gusto a la compe`:`${nameH(f)} no está interesado en estar en la FMS`} y se baja del Vida o muerte de ${esc(ldef(ev.key).name)}.</p>
+      <p class="pos-v"><b>${fnameH(ev.rival)} se queda en el line up.</b></p>${isWSF(ev.key)?`<p class="step-note">Como no habrá Vida o muerte, en la J1 ${fnameH(ev.rival)} tendrá su batalla contra un extraplayer como el resto.</p>`:''}`; }
   else if(ev.type==='teamrq'){ kick='🔥 Team RQ'; title='Rodrigo Quesada presenta el Team RQ'; const T=s.teamRQ||{ids:[]}; const q=STREAMERS.quesada&&STREAMERS.quesada.photo;
     body=`<div class="rq-head">${q?`<img src="${q}" alt="">`:''}<p>Rodrigo Quesada va a patrocinar a estos competidores esta temporada. Tendrán más opciones de entrar en las competiciones under y en Red Bull, y les irá mejor en el ranking de ascenso.</p></div>
       <div class="rq-grid">${T.ids.map(id=>{ const f=fby(id); const k=ascLeagueOf(f); return `<div class="rq-card"><span class="rq-ph" style="${avatarDivStyle(f)}">${avatarContent(f)}</span><b>${esc(f.name)}</b><span class="rq-lg">${leagueDot(k,16)} ${esc(ldef(k).short)}</span></div>`; }).join('')}</div>
@@ -5582,7 +5597,7 @@ function showUQ(ev){
   else if(ev.type==='recup'){ const m=L.rounds[ev.j][ev.mi]; const p=ptbOf(m); kick='🎤 Recuperativa'; title=`Batalla recuperativa · J${ev.j+1} de ${ldef(ev.key).short}`;
     body=`<div class="ex-row" style="justify-content:center; font-size:18px">${miniAvatar(m.a,28)} ${fnameH(m.a)} <span class="vs">vs</span> ${fnameH(m.b)} ${miniAvatar(m.b,28)}</div>
       <p style="text-align:center">Gana <b>${fnameH(m.result.winner)}</b> ${esc(m.lb||'')} · PTB ${fpt(p[0])}–${fpt(p[1])} · ▶ ${fmtViews(m.views)}</p>`; }
-  openModal(`<div class="uq">${['prep','driu','zasko','refuse','papo','unavail','sweet','reggae','khan','local','ego','snub','trabado','tiago','navas','azuky','city','skone','trf','azecat'].includes(ev.type)&&f?`<div class="uq-face">${uqFace(f.id)}</div>`:''}<div class="st-kicker">${kick} · ${fmtDay(s.year,ev.day)}</div><h3 style="margin:4px 0 10px">${title}</h3>${body}</div>
+  openModal(`<div class="uq">${['prep','driu','zasko','refuse','papo','unavail','sweet','reggae','khan','local','ego','snub','trabado','tiago','navas','azuky','city','skone','trf','azecat','porefuse'].includes(ev.type)&&f?`<div class="uq-face">${uqFace(f.id)}</div>`:''}<div class="st-kicker">${kick} · ${fmtDay(s.year,ev.day)}</div><h3 style="margin:4px 0 10px">${title}</h3>${body}</div>
     <div class="modal-actions">${acts}</div>`, ev.type==='unavail' ? 'uqwide' : undefined, true);
   themeEl(document.getElementById('modalRoot'), ev.key);
 }
@@ -6911,7 +6926,7 @@ function renderDJBox(s, key){
     ${open?`<div class="spk-grid">${all.filter(d=>d.name!==L.dj).map(d=>card(d,false)).join('')}</div>`:''}</div>`;
 }
 /* ---- DJ del Internacional: uno de los DJs de tus ligas ---- */
-function intlDjCands(s){ return [...new Set(natKeys(s).map(k=>s.leagues[k].dj).filter(Boolean))]; }
+function intlDjCands(s){ return [...new Set(natKeys(s).map(k=>s.leagues[k].dj).filter(n=>n && djBy(n)))]; }
 /* =========================================================================
    JURADOS: 5 por liga (obligatorio, también World Series e Internacional).
    Favorecen un poco a sus compatriotas y a los estilos que les gustan. Los de fuera cuestan 100 € más (viajes).
@@ -7076,7 +7091,8 @@ function istInit(){ const s=cur();
   if(!state.ui.ispk || !state.ui.ispk.length) state.ui.ispk=intlSpkCands(s).sort((a,b)=>spkBy(b).cost-spkBy(a).cost).slice(0,intlSpkMax(s));
   const dc=intlDjCands(s); if(!state.ui.idj || !dc.includes(state.ui.idj)) state.ui.idj=dc.sort((a,b)=>djBy(b).cost-djBy(a).cost)[0]||null;
   if(!state.ui.ijd || !state.ui.ijd.length){ const out=jdAutoList(s); state.ui.ijd=out; } }
-function istReady(){ const s=cur(); const sp=(state.ui.ispk||[]).length===intlSpkMax(s); const dj=!intlDjCands(s).length || !!state.ui.idj; const jd=(state.ui.ijd||[]).length===Math.min(5,intlJdCands(s).length); return {sp,dj,jd,all:sp&&dj&&jd}; }
+function intlJdNeed(s){ return Math.max(1, Math.min(5, jdAutoList(s).length)); }   // con conflictos (Quesada) puede que no se lleguen a 5
+function istReady(){ const s=cur(); const sp=(state.ui.ispk||[]).length===intlSpkMax(s); const dj=!intlDjCands(s).length || !!state.ui.idj; const jd=(state.ui.ijd||[]).length===intlJdNeed(s); return {sp,dj,jd,all:sp&&dj&&jd}; }
 function showIntlStaff(){
   const s=cur(); istInit(); const R=istReady();
   const faces=list=>`<span class="ist-faces">${list.map(x=>x.img?`<img src="${x.img}" alt="" title="${esc(x.n)}">`:`<i title="${esc(x.n)}">${esc(x.n[0])}</i>`).join('')||'<small>Sin elegir</small>'}</span>`;
@@ -7086,7 +7102,7 @@ function showIntlStaff(){
     <div class="ist-list">
       ${btn('🎙️','Speakers',spk.length,intlSpkMax(s),R.sp,'showIntlSpeakers()',spk)}
       ${intlDjCands(s).length?btn('🎧','DJ',dj.length,1,R.dj,'showIntlDJ()',dj):''}
-      ${btn('⚖️','Jurado',jd.length,Math.min(5,intlJdCands(s).length),R.jd,'showIntlJudges()',jd)}
+      ${btn('⚖️','Jurado',jd.length,intlJdNeed(s),R.jd,'showIntlJudges()',jd)}
     </div>
     <div class="modal-actions"><button class="btn primary" ${R.all?'':'disabled'} onclick="istConfirm()">Continuar</button></div>`, 'wide', true);
   themeEl(document.getElementById('modalRoot'), INTL.key);
@@ -7118,7 +7134,7 @@ function showIntlDJ(){
 }
 function idjPick(n){ state.ui.idj=n; document.querySelectorAll('.idj-card').forEach(b=>{ const on=b.dataset.n===n; b.classList.toggle('on',on); const ck=b.querySelector('.vote-check'); if(on && !ck) b.insertAdjacentHTML('beforeend','<span class="vote-check">✓</span>'); if(!on && ck) ck.remove(); }); const bt=document.getElementById('idjOk'); if(bt) bt.disabled=false; }
 function showIntlJudges(){
-  const s=cur(); const sel=state.ui.ijd||(state.ui.ijd=[]); const cands=intlJdCands(s).sort((a,b)=>b.cost-a.cost); const need=Math.min(5,cands.length);
+  const s=cur(); const sel=state.ui.ijd||(state.ui.ijd=[]); const cands=intlJdCands(s).sort((a,b)=>b.cost-a.cost); const need=intlJdNeed(s);
   const cnt={}; sel.forEach(n=>{ const c=jdCountry(jdBy(n)); cnt[c]=(cnt[c]||0)+1; });
   const warn=Object.entries(cnt).filter(([c,n])=>n>2);
   openModal(`<h3>⚖️ Jurado del ${INTL.name}</h3><p class="step-note">Elige <b>${need}</b> jurados de tus ligas. Ojo: si pones más de 2 del mismo país, el resto de países se va a quejar.</p>
@@ -7164,7 +7180,7 @@ var TW_JD={
 };
 function jdTw(set, c){ const d=twDia(c); const T=TW_JD[set]; return pick(T[d]||T.neu); }
 /* ---- speakers del Internacional ---- */
-function intlSpkCands(s){ return [...new Set(s.activeKeys.flatMap(k=>spkList(s.leagues[k])))]; }
+function intlSpkCands(s){ return [...new Set(s.activeKeys.flatMap(k=>spkList(s.leagues[k])))].filter(n=>spkBy(n)); }
 function intlSpkMax(s){ return Math.min(2, intlSpkCands(s).length); }
 function intlSpkAuto(s){ s.intl.speakers=intlSpkCands(s).sort((a,b)=>spkBy(b).cost-spkBy(a).cost).slice(0,intlSpkMax(s)); if(!s.intl.dj){ const dj=intlDjCands(s).sort((a,b)=>djBy(b).cost-djBy(a).cost)[0]; s.intl.dj=dj||null; } s.intl.spkDone=true; }
 
@@ -8985,6 +9001,11 @@ function uqTension(id, choice, silent){ const s=cur(); const ev=(s.uq||[]).find(
     else if(r<2/3){ M.push({w:'them', t:'Bueno… me lo aguantaré. Pero que conste.'}); }
     else { M.push({w:'them', t:'Pues me bajo. No pienso compartir line up con él.'}); uqRemove(s, L, f.id); ev.after='replace'; addLog(s, ev.day, `${f.name} se baja de ${ldef(ev.key).name} por no compartir line up con ${o.name}.`, 'bad'); } }
   ev.done=true; ev.stage='done'; if(!silent){ render(); waShow(ev); } }
+
+/* ---------- Vida o muerte: si el aspirante es de los que rechazan la FMS, puede bajarse; el de tu line up se queda ---------- */
+function poRefuseRoll(s){ if(state.company.infinite) return; natKeys(s).forEach(k=>{ const L=s.leagues[k]; poList(L).filter(poActiveP).forEach(P=>{ const f=fby(P.b); const r=f && UQ_REFUSE[f.name]; if(!r || r.papo) return;
+    if(Math.random()>=Math.max(0, r.p-spkVal(k,'refuse'))) return; P.done=true; P.refused=true; P.winner=P.a; if(r.kind && r.kind!=='melody' && r.kind!=='streams') f.exOffer=s.year;
+    uqPush(s, {day:s.day, type:'porefuse', key:k, fid:P.b, rival:P.a, kind:r.kind||'no'}); addLog(s, s.day, `⚔️ ${f.name} se baja del Vida o muerte de ${ldef(k).name}: ${fname(P.a)} se queda en la liga.`, 'bad'); }); }); }
 
 /* ---------- Papo y La Joaqui no comparten line up (día 3 de la temporada; no en sandbox) ---------- */
 function exNoPair(a, b){ const n=[fby(a),fby(b)].map(f=>f&&f.name); return n.includes('Papo') && n.includes('La Joaqui'); }
