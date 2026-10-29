@@ -1915,7 +1915,7 @@ const STAR_SALARY = 0.15;  // cada estrella de la empresa: los freestylers piden
 function contractCost(f, key){ if(isWS(key)) return Math.round(contractCostBase(f,key)*0.5/100)*100; return contractCostBase(f,key); }
 function contractCostBase(f, key){ const st=(state.company&&state.company.stars)||0; const nk=(typeof fxVal==='function') ? 1-fxVal(key,'salary') : 1; const base=salaryOf(f)*(1+STAR_SALARY*st)*(isForeign(f,key)?FOREIGN_MULT:1); const capped = Math.min(SALARY_CAP, base); const dj=(isForeign(f,key) && typeof djVal==='function') ? 1-djVal(key,'fcost') : 1; return Math.round(capped*nk*dj/100)*100; }
 const SALARY_CAP = 70000;   // nadie cobra más de 70K de sueldo (Walls incluido)
-const UQ_SAL = {'Walls':1.6, 'Wos':1.15, 'Trueno':1.15, 'Duki':1.15, 'TiagoPZK':1.15, 'Jaloner':1.15, 'Lit Killah':1.15};
+const UQ_SAL = {'Ibai':3, 'Guanyar':2, 'Walls':1.6, 'Wos':1.15, 'Trueno':1.15, 'Duki':1.15, 'TiagoPZK':1.15, 'Jaloner':1.15, 'Lit Killah':1.15};
 function salaryOf(f){
   const v = 0.6*f.nivel + 0.4*f.fama;
   const raw = (600 + Math.pow(Math.max(0,(v-35))/60, 2.3)*32000) * (f.legend ? LEGEND_MULT : 1) * 0.9 * (UQ_SAL[f.name]||1) * (f.salUp||1);   // salUp: +5% por cada temporada en el top 10 de visitas
@@ -4500,6 +4500,7 @@ function battleViews(m, mult){
   const lvl=(A.nivel+B.nivel)/2; const lvlF=clamp(0.5+(lvl-64)/36, 0.5, 1.1);   // batallas de nivel bajo: algo menos de visitas
   let v=1000*Math.pow(10, clamp((score-25)/70,0,1.25)*3.4) * Math.exp(gauss()*0.35) * (mult||1) * lvlF;
   if(m.result && m.result.tiebreak) v*=1.15;
+  if(typeof exNoPair==='function' && exNoPair(m.a, m.b)) v*=1.25;   // Papo vs La Joaqui, Mr. Ego vs Swit Eme: la polémica da +25% de visitas
   [A,B].forEach(F=>{ const vm=STYLES[styleOf(F)].views; if(vm) v*=vm; });
   if(m.result && isUpset(fby(m.result.winner), fby(m.result.loser))) v*=1.25;
   [A,B].forEach(F=>{ if(VIEW_STAR[F.name]) v*=VIEW_STAR[F.name]; });
@@ -5087,7 +5088,7 @@ function wsBuildRounds(L){ const sol=wsSolve(L.competitors, new Set(), new Set()
 function wsEpFee(f, key){ key=key||WS.key; const y=cur()&&cur().year; const disc=(f && exOfferActive(f,y) && UQ_REFUSE[f.name]) ? (UQ_REFUSE[f.name].exDisc||0) : 0; return Math.max(100, Math.round(contractCostBase(f, key)*0.05*(1-disc)*(1-fxVal(key,'exfee'))/100)*100); }
 function wsDraft(key){ const L=cur().leagues[key]; const k='wsd_'+key; let d=state.ui[k];
   if(!d || d.round!==L.played) d=state.ui[k]={round:L.played, pairs:(L.tiago && L.tiago.j===L.played && wsFeasible(L,[[L.tiago.a,L.tiago.b]],[]))?[[L.tiago.a,L.tiago.b]]:[], eps:[{c:null,x:null},{c:null,x:null}], sel:null, slot:null, sede:null};
-  if(L.played===0 && !isWS(key) && poActive(L)) d.eps[0]={c:L.po.a, x:L.po.b, po:true};   // Vida o muerte: extraplayer fijo de la J1
+  if(L.played===0 && !isWS(key) && poActive(L)) poList(L).filter(poActiveP).slice(0,2).forEach((P,i)=>{ d.eps[i]={c:P.a, x:P.b, po:true}; });   // Vida o muerte (uno o dos): extraplayers fijos de la J1
   return d; }
 function wsFeasible(L, pairs, epc){ const st=wsState(L); return !!wsSolve(L.competitors, st.used, st.ep, pairs, epc, WS_JORNADAS-L.played); }
 function wsNeed(L, d, id){ return 2 - d.pairs.filter(p=>p.includes(id)).length - d.eps.filter(e=>e.c===id).length; }
@@ -7103,7 +7104,7 @@ function istInit(){ const s=cur();
   if(!state.ui.ispk || !state.ui.ispk.length) state.ui.ispk=intlSpkCands(s).sort((a,b)=>spkBy(b).cost-spkBy(a).cost).slice(0,intlSpkMax(s));
   const dc=intlDjCands(s); if(!state.ui.idj || !dc.includes(state.ui.idj)) state.ui.idj=dc.sort((a,b)=>djBy(b).cost-djBy(a).cost)[0]||null;
   if(!state.ui.ijd || !state.ui.ijd.length){ const out=jdAutoList(s); state.ui.ijd=out; } }
-function intlJdNeed(s){ return Math.max(1, Math.min(5, jdAutoList(s).length)); }   // con conflictos (Quesada) puede que no se lleguen a 5
+function intlJdNeed(s){ return Math.min(5, jdAutoList(s).length); }   // con conflictos (Quesada) puede que no se lleguen a 5; partidas de versiones sin jurados: 0 (no se pide)
 function istReady(){ const s=cur(); const sp=(state.ui.ispk||[]).length===intlSpkMax(s); const dj=!intlDjCands(s).length || !!state.ui.idj; const jd=(state.ui.ijd||[]).length===intlJdNeed(s); return {sp,dj,jd,all:sp&&dj&&jd}; }
 function showIntlStaff(){
   const s=cur(); istInit(); const R=istReady();
@@ -7114,7 +7115,7 @@ function showIntlStaff(){
     <div class="ist-list">
       ${btn('🎙️','Speakers',spk.length,intlSpkMax(s),R.sp,'showIntlSpeakers()',spk)}
       ${intlDjCands(s).length?btn('🎧','DJ',dj.length,1,R.dj,'showIntlDJ()',dj):''}
-      ${btn('⚖️','Jurado',jd.length,intlJdNeed(s),R.jd,'showIntlJudges()',jd)}
+      ${intlJdNeed(s)?btn('⚖️','Jurado',jd.length,intlJdNeed(s),R.jd,'showIntlJudges()',jd):''}
     </div>
     <div class="modal-actions"><button class="btn primary" ${R.all?'':'disabled'} onclick="istConfirm()">Continuar</button></div>`, 'wide', true);
   themeEl(document.getElementById('modalRoot'), INTL.key);
@@ -8458,7 +8459,8 @@ function ascPreInfo(s){ const rows=[];
 const ASC_UNDER=[1500,1750,1500,1000];            // final, semis, cuartos, octavos (desde el final)
 const ASC_RB=[1500,2000,1500,1500];               // final, semis, cuartos, octavos
 let ASC_GAIN=null;   // puntos que se van sumando en la competición que se está jugando
-function ascAdd(s, id, pts){ if(!id || !pts) return; if(isTeamRQ(id, s)) pts=Math.round(pts*1.2); if(!s.ascPts) s.ascPts={}; s.ascPts[id]=(s.ascPts[id]||0)+pts; if(ASC_GAIN) ASC_GAIN[id]=(ASC_GAIN[id]||0)+pts; }
+function ascAdd(s, id, pts){ if(!id || !pts) return; if(signedLeagueOf(s, id)) return;   // los que compiten en cualquier FMS (aunque no sea la de su país) no suman para el ascenso
+  if(isTeamRQ(id, s)) pts=Math.round(pts*1.2); if(!s.ascPts) s.ascPts={}; s.ascPts[id]=(s.ascPts[id]||0)+pts; if(ASC_GAIN) ASC_GAIN[id]=(ASC_GAIN[id]||0)+pts; }
 // liga nacional por la que asciende cada uno: la de su país; si su país no tiene FMS propia, cuenta para FMS Caribe
 function ascLeagueOf(f){ if(!f) return null; const c=fHome(f); const l=LEAGUES.find(x=>x.countries.includes(c)); return l ? l.key : 'fms_caribe'; }
 function ascAwardKO(s, B, table, mult, third){ if(!B || !B.rounds) return; const R=B.rounds; const n=R.length;
@@ -8484,7 +8486,7 @@ function showAscGain(key, day){ const s=cur(); const rb=isRB(key); const ev=rb ?
 function ascAwardRB(s, ids, B, mult, ev){ if(ascOf(s).mode!=='rank') return; ASC_GAIN={}; (ids||[]).forEach(id=>ascAdd(s, id, 500*mult)); ascAwardKO(s, B, ASC_RB, mult, 500); if(ev) ev.ascGain=ASC_GAIN; ASC_GAIN=null; }
 // ranking de una liga: los de su país que no están en ella esta temporada
 function ascRanking(s, k){ const L=s.leagues[k]; const d=ldef(k); if(!L || !d || !d.countries) return []; const P=s.ascPts||{};
-  return Object.keys(P).map(id=>({id, pts:P[id]})).filter(r=>{ const f=fby(r.id); return f && r.pts>0 && ascLeagueOf(f)===k && !L.competitors.includes(r.id); })
+  return Object.keys(P).map(id=>({id, pts:P[id]})).filter(r=>{ const f=fby(r.id); return f && r.pts>0 && ascLeagueOf(f)===k && !signedLeagueOf(s, r.id); })
     .sort((a,b)=>b.pts-a.pts || fby(b.id).nivel-fby(a.id).nivel); }
 function showAscRanking(k){ const s=cur(); const keys=natKeys(s); if(!k || !keys.includes(k)) k=keys[0]; if(!k) return; state.ui.ascK=k;
   const a=ascOf(s); let body='';
@@ -9190,7 +9192,7 @@ var TW_CHOUT={
 };
 
 /* ---- versión del juego (esquina inferior derecha) ---- */
-var GAME_VERSION='1.2.2';
+var GAME_VERSION='1.2.3';
 (function(){ try{ const v=document.createElement('div'); v.id='verTag'; v.textContent=GAME_VERSION; document.body.appendChild(v); }catch(e){} })();
 </script>
 </body>
