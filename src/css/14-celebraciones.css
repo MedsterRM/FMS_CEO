@@ -1,0 +1,49 @@
+/* ---------- celebraciones de campeón ---------- */
+#celeb .cel{position:fixed; inset:0; z-index:330; display:flex; align-items:center; justify-content:center; overflow:hidden; animation:celIn .5s ease-out;}
+@keyframes celIn{from{opacity:0;} to{opacity:1;}}
+.cel-fms{background:radial-gradient(ellipse at center, color-mix(in srgb, var(--celc) 55%, #000) 0%, #07070a 70%);}
+.cel-gold{background:radial-gradient(ellipse at center, #5a4512 0%, #0a0804 70%);}
+.cel-rb{background:radial-gradient(ellipse at 30% 30%, #1B2A6B 0%, transparent 55%), radial-gradient(ellipse at 70% 70%, #6b0a22 0%, transparent 55%), #05050c;}
+.cel-rays{position:absolute; left:50%; top:50%; width:220vmax; height:220vmax; margin:-110vmax 0 0 -110vmax; opacity:0; animation:celRaysIn 1.2s ease-out .4s forwards, celSpin 30s linear infinite;
+  background:repeating-conic-gradient(from 0deg, rgba(255,255,255,0.09) 0deg 6deg, transparent 6deg 18deg);}
+.cel-gold .cel-rays{background:repeating-conic-gradient(from 0deg, rgba(239,203,94,0.16) 0deg 6deg, transparent 6deg 18deg);}
+.cel-rb .cel-rays{background:repeating-conic-gradient(from 0deg, rgba(219,10,64,0.14) 0deg 8deg, rgba(27,42,107,0.18) 8deg 16deg, transparent 16deg 24deg);}
+@keyframes celRaysIn{to{opacity:1;}}
+@keyframes celSpin{to{transform:rotate(360deg);}}
+.cel-confetti{position:absolute; inset:0; pointer-events:none;}
+.cel-confetti i{position:absolute; top:-20px; border-radius:2px; animation-name:celFall; animation-timing-function:linear; animation-iteration-count:infinite;}
+@keyframes celFall{0%{transform:translateY(-20px) rotate(0);} 100%{transform:translateY(110vh) rotate(720deg);}}
+.cel-body{position:relative; text-align:center; padding:20px; max-width:92vw;}
+.cel-logo{width:84px; height:84px; object-fit:contain; border-radius:16px; opacity:0; animation:celDrop .7s cubic-bezier(.2,1.4,.4,1) .3s forwards;}
+.cel-fms .cel-logo, .cel-gold .cel-logo{object-fit:cover;}
+.cel-kicker{font-family:var(--font-cond); font-weight:700; font-size:15px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.75); margin:10px 0 14px; opacity:0; animation:celFade .6s ease-out .7s forwards;}
+.cel-face{width:170px; height:170px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; overflow:hidden; font-family:var(--font-display); font-size:80px; color:#fff;
+  box-shadow:0 0 0 5px rgba(255,255,255,0.9), 0 0 60px 10px rgba(255,255,255,0.35); opacity:0; animation:celPop .9s cubic-bezier(.2,1.5,.4,1) 1.1s forwards;}
+.cel-gold .cel-face{box-shadow:0 0 0 5px #EFCB5E, 0 0 80px 18px rgba(239,203,94,0.55);}
+.cel-rb .cel-face{box-shadow:0 0 0 5px #DB0A40, 0 0 0 10px #1B2A6B, 0 0 80px 18px rgba(219,10,64,0.45);}
+.cel-face img{width:100%; height:100%; object-fit:cover;}
+.cel-icon{font-size:46px; margin-top:-26px; position:relative; opacity:0; animation:celPop .7s cubic-bezier(.2,1.6,.4,1) 1.8s forwards;}
+.cel-name{font-family:var(--font-display); font-size:clamp(54px,11vw,110px); line-height:0.95; letter-spacing:0.02em; color:#fff; text-shadow:0 6px 30px rgba(0,0,0,0.6); opacity:0; animation:celSlam .6s cubic-bezier(.2,1.3,.4,1) 2.1s forwards;}
+.cel-gold .cel-name{background:linear-gradient(180deg,#ffffff,#FFE58A 50%,#EFCB5E); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.cel-title{font-family:var(--font-display); font-size:clamp(24px,4.5vw,40px); letter-spacing:0.04em; color:var(--gold); opacity:0; animation:celFade .6s ease-out 2.6s forwards;}
+.cel-rb .cel-title{color:#fff; background:linear-gradient(90deg,#DB0A40,#1B2A6B); padding:2px 14px; border-radius:8px; display:inline-block;}
+.cel-fms .cel-title{color:#fff;}
+.cel-sub{font-family:var(--font-cond); font-size:17px; color:rgba(255,255,255,0.8); margin-top:8px; opacity:0; animation:celFade .6s ease-out 3s forwards;}
+.cel-btn{margin-top:22px; opacity:0; animation:celFade .5s ease-out 3.4s forwards;}
+@keyframes celDrop{from{opacity:0; transform:translateY(-60px) scale(.6);} to{opacity:1; transform:none;}}
+@keyframes celPop{from{opacity:0; transform:scale(.2);} to{opacity:1; transform:none;}}
+@keyframes celSlam{from{opacity:0; transform:scale(2.2); filter:blur(8px);} to{opacity:1; transform:none; filter:blur(0);}}
+@keyframes celFade{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+@media(max-width:480px){ .cel-face{width:130px; height:130px; font-size:60px;} .cel-logo{width:64px; height:64px;} }
+@media (prefers-reduced-motion: reduce){ #celeb *{animation-duration:.01s !important; animation-delay:0s !important;} .cel-confetti{display:none;} .cel-rays{animation:none; opacity:1;} }
+.st-more{display:flex; flex-direction:column; align-items:center; gap:2px; margin:12px auto 6px; background:transparent; border:none; color:var(--gray); font-family:var(--font-cond); font-size:13px; font-weight:700; text-transform:none; letter-spacing:0; cursor:pointer;}
+.st-more i{font-style:normal; display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:#4bd18f; font-size:13px; transition:transform .25s; animation:stBob 1.6s ease-in-out infinite;}
+.st-more:hover i{border-color:#4bd18f;}
+.st-more.open i{transform:rotate(180deg); animation:none;}
+@keyframes stBob{0%,100%{translate:0 0;} 50%{translate:0 3px;}}
+#stHype:not([hidden]){animation:stDown .3s ease-out;}
+@keyframes stDown{from{opacity:0; transform:translateY(-8px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){ .st-more i{animation:none;} #stHype{animation:none !important;} }
+.sp-fx{display:block; margin-top:3px; font-family:var(--font-cond); font-size:12px; font-weight:700; color:#ffcf5a; line-height:1.25;}
+.sp-row .sp-fx{white-space:normal;}
+

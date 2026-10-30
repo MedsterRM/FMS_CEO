@@ -1,0 +1,46 @@
+/* ---------- patrocinadores ---------- */
+.sp-box{background:var(--bg-alt); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:14px;}
+.sp-head{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;}
+.sp-pool{font-family:var(--font-cond); font-size:12px; font-weight:700; color:#1a1a1a; background:var(--gold); border-radius:999px; padding:2px 9px;}
+.sp-slots{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px;}
+.sp-slot{display:flex; align-items:center; gap:10px; background:var(--card); border:1px dashed #3a3a44; border-radius:10px; padding:9px 10px; color:var(--white); text-align:left; text-transform:none; letter-spacing:0; font-family:var(--font-body); min-width:0;}
+.sp-slot.locked{opacity:.45; border-style:dashed; cursor:not-allowed;}
+.sp-slot.on{border-style:solid; border-color:#3a3a44;}
+.sp-slot b{display:block; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.sp-slot small, .sp-row small{display:block; font-family:var(--font-cond); font-size:12px; color:var(--gray);}
+.sp-slot > span:last-child{min-width:0;}
+.sp-plus{width:32px; height:32px; border-radius:8px; border:1px dashed #555; display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--gray); flex-shrink:0;}
+.sp-badge{width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:14px; letter-spacing:0.02em; flex-shrink:0;}
+.sp-badge.big{width:42px; height:42px; font-size:18px;}
+.sp-list{display:flex; flex-direction:column; gap:6px; max-height:52vh; overflow:auto;}
+.sp-row{display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:9px 12px; color:var(--white); text-align:left; text-transform:none; letter-spacing:0; font-family:var(--font-body); width:100%;}
+.sp-row > div{flex:1; min-width:0;}
+.sp-row:hover{border-color:var(--gold);}
+.sp-row.cur{border-color:var(--gold);}
+.sp-amt{font-family:var(--font-display); font-size:20px; color:#4bd18f; text-align:right;}
+.sp-banner{border-left-color:var(--gold);}
+@media(max-width:640px){ .sp-slots{grid-template-columns:1fr;} }
+/* ---------- streamers ---------- */
+.modal.stream{max-width:620px; width:100%;}
+.st-top{display:flex; gap:16px; align-items:center; margin-bottom:12px;}
+.st-photo{width:96px; height:96px; border-radius:50%; object-fit:cover; flex-shrink:0; border:3px solid #444;}
+.st-photo.good{border-color:#4bd18f; box-shadow:0 0 24px rgba(75,209,143,0.45);}
+.st-photo.bad{border-color:#ff6b6b; box-shadow:0 0 24px rgba(255,107,107,0.45);}
+.st-kicker{font-family:var(--font-cond); font-size:12px; color:#ff4d5e; font-weight:700; letter-spacing:0.06em;}
+.st-table{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+.st-h, .st-r{display:grid; grid-template-columns:minmax(0,2fr) 1fr 1.3fr; gap:8px; padding:8px 12px; align-items:center;}
+.st-h{background:var(--card); font-family:var(--font-cond); font-size:12px; color:var(--gray); font-weight:700;}
+.st-r{border-top:1px solid var(--line); font-size:13.5px;}
+.st-r > span:first-child{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600;}
+.st-r i{font-style:normal; color:var(--gray-dim); font-size:12px;}
+.st-r > span:not(:first-child){font-family:var(--font-cond); font-size:14px; text-align:right;}
+.st-r small{font-size:11px; opacity:0.85;}
+.st-h span:not(:first-child){text-align:right;}
+.st-total{margin-top:10px; font-family:var(--font-cond); font-size:15px; text-align:right;}
+@media(max-width:480px){ .st-top{flex-direction:column; text-align:center;} .st-photo{width:80px; height:80px;} }
+.sp-row.clash{opacity:0.45; cursor:not-allowed;}
+.sp-row.clash small{color:#ff6b6b;}
+.sp-badge{font-size:11px; padding:0 3px; text-align:center; line-height:1.05; overflow:hidden; font-family:var(--font-cond); font-weight:800;}
+.sp-badge.big{font-size:12.5px;}
+.sp-badge{width:38px;} .sp-badge.big{width:46px;}
+
