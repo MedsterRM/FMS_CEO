@@ -1,5 +1,34 @@
 # Novedades
 
+## 1.2.4
+**Nuevo**
+- Menú **RECORDS** (antes MVPs): ranking de MVPs + récords de más batallas, más visitas, más trofeos y batalla más vista de cada FMS.
+- **Royal League** (Under española): liga de 10 en un fin de semana de noviembre; solo se ve la clasificación.
+- **DEM Argentina** como competición Under principal.
+- **Punchline Media**, nueva cuenta de noticias en X para line ups y cruces.
+- Si un extranjero no quiere competir fuera, puedes meterlo en la FMS de su país sustituyendo a uno del line up (que se enfada y lo cuenta en X).
+- Logro **"El niño formato"**: que Gazir gane todas las FMS.
+- **Sandbox** (de prueba): FMS Venezuela y FMS Uruguay con su mapa de sedes, hasta 9 ligas e Internacional con 7 u 8 ligas (con votación de terceros).
+- Más de 30 competidores nuevos y 6 jueces nuevos (Dozer vota siempre réplica: "0.7 uff").
+- Emojis de trofeo, ojo, micrófono, flecha, estrella y candado como imagen.
+
+**Cambios**
+- El Vida o muerte ya no destapa al ganador en el cartel de la J1 y está más equilibrado.
+- Red Bull da algo menos de puntos de ascenso (sigue siendo lo que más da); la Internacional, por encima del resto.
+- Exhibiciones: cuestan el salario completo entre 9.
+- Éxito/fracaso en una liga extranjera: la etiqueta dura una temporada y el efecto se mantiene si vuelve a esa liga (se pierde tras 3 temporadas fuera).
+- Patrocinadores: RQ se ofrece seguro con la primera estrella; los descuentos de fichajes se aplican también a los ya firmados.
+- Pandemia: sin Caribe, Internacional ni World Series, sin exhibiciones con extranjeros y sin editor.
+- Ibai cobra 50k de inicio. CDFlex pasa a llamarse El Demonio En Bici. Ajustes de nivel y estilo de varios competidores.
+- En Caribe se pueden repetir sedes si hay más jornadas que zonas. Los uruguayos solo van a la Red Bull Sudamérica.
+
+**Arreglos**
+- Partidas que podían perderse o salir como slot vacío si no se leían bien.
+- El scroll del fondo se bloquea con las ventanas abiertas.
+- El Sandbox se desbloquea al terminar la temporada de 5 estrellas.
+- Enfados al empezar temporada antes que las sustituciones; un enfadado no entra de sustituto.
+- Varios arreglos de Vida o muerte, jurados y ascenso.
+
 ## 1.2.3
 - Papo vs La Joaqui y Mr. Ego vs Swit Eme tienen un 25% más de visitas por la polémica.
 - Formato de 5 jornadas viniendo de 11: los dos Vida o muerte salen como los 2 extraplayers fijos de la J1.
