@@ -1,0 +1,92 @@
+/* ---------- detail views ---------- */
+.detail-head{display:flex; align-items:center; gap:16px; margin-bottom:22px; flex-wrap:wrap;}
+.detail-head .thumb-lg{width:64px;height:64px;border-radius:12px; background:var(--card); border:1px solid var(--line); display:flex; align-items:center;justify-content:center; overflow:hidden;}
+.detail-head .thumb-lg img{width:100%;height:100%;object-fit:cover;}
+.detail-head h1{font-size:36px;}
+.back-link{font-family:var(--font-cond); font-size:14px; color:var(--gray); text-transform:uppercase; letter-spacing:0.05em; display:inline-flex; align-items:center; gap:6px; margin-bottom:14px; cursor:pointer; font-weight:600;}
+.back-link:hover{color:var(--white);}
+
+.selector-box{background:var(--bg-alt); border:1px solid var(--line); border-radius:12px; padding:18px;}
+.selector-top{display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:14px; flex-wrap:wrap;}
+.counter{font-family:var(--font-cond); font-size:15px; font-weight:700;}
+.counter .n{color:var(--red-bright);}
+.searchbox{width:220px;}
+.pick-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; max-height:420px; overflow-y:auto; padding-right:4px;}
+.picked-strip{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:12px;}
+.picked-strip-label{font-family:var(--font-cond); font-size:11.5px; text-transform:uppercase; letter-spacing:0.07em; color:var(--gray); margin-bottom:8px; font-weight:700;}
+.picked-chips{display:flex; flex-wrap:wrap; gap:6px; max-height:132px; overflow-y:auto;}
+.picked-chip{display:inline-flex; align-items:center; gap:0; background:var(--bg-alt); border:1px solid var(--red); border-radius:999px; padding:3px 8px 3px 3px; font-size:12.5px; font-weight:600; cursor:pointer; touch-action:manipulation;}
+.picked-chip:hover{background:color-mix(in srgb, var(--red) 12%, transparent);}
+.picked-chip .mini-avatar{margin-right:6px;}
+.picked-chip-x{margin-left:6px; color:var(--gray); font-size:15px; line-height:1;}
+.pick-h2h-count{flex-shrink:0; font-family:var(--font-cond); font-size:11px; font-weight:700; color:var(--gray); white-space:nowrap; margin-left:6px;}
+.pick-item{
+  display:flex; align-items:center; gap:9px; background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:9px 11px; cursor:pointer; transition:all .12s;
+}
+.pick-item:hover{border-color:#3a3a3f;}
+.pick-item.checked{border-color:var(--red); background:color-mix(in srgb, var(--red) 10%, transparent);}
+.pick-item.disabled{opacity:0.35; cursor:not-allowed;}
+.pick-item.relegated{filter:grayscale(1); opacity:0.65; cursor:not-allowed; border-color:var(--red-dark);}
+.pick-item input{accent-color:var(--red);}
+.pick-item .pname{font-weight:600; font-size:14.5px;}
+.pick-item .pcountry{font-family:var(--font-cond); font-size:12px; color:var(--gray);}
+.relegated-tag{font-family:var(--font-cond); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--red-bright); margin-top:1px;}
+.league-badge-tag{display:inline-block; font-family:var(--font-cond); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; padding:2px 7px; border-radius:5px; margin-top:3px;}
+
+/* ---------- league table ---------- */
+.standings{width:100%; border-collapse:collapse; margin-bottom:26px; font-family:var(--font-cond);}
+.standings th{text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:0.07em; color:var(--gray); padding:8px 10px; border-bottom:1px solid var(--line);}
+.standings td{padding:9px 10px; border-bottom:1px solid var(--line); font-size:15px;}
+.standings tr.q td{background:color-mix(in srgb, var(--red) 6%, transparent);}
+.standings td.pos{font-family:var(--font-display); font-size:17px; color:var(--gray);}
+.standings tr.q td.pos{color:var(--red-bright);}
+.standings td.pts{font-weight:800; font-size:16px;}
+.qbadge{font-size:10px; background:var(--red); color:#fff; padding:2px 6px; border-radius:5px; margin-left:8px; letter-spacing:0.05em; vertical-align:middle;}
+
+.matches-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px;}
+.jornada-block{margin-bottom:12px;}
+.jornada-nav{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;}
+.jornada-nav-label{font-family:var(--font-cond); font-size:14px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; color:var(--gray); text-align:center; flex:1; min-width:120px;}
+.jornada-nav .jdone{color:#4bd18f; font-weight:600; text-transform:none; letter-spacing:0;}
+.jornada-nav .btn:disabled{opacity:0.35; cursor:not-allowed;}
+.mvp-picker{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.mvp-label{font-family:var(--font-cond); font-size:12px; color:var(--gold); text-transform:uppercase; letter-spacing:0.05em; font-weight:700; white-space:nowrap;}
+.mvp-picker select{font-size:13px; padding:5px 8px;}
+.match{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; min-height:132px;}
+.match-head{display:flex; align-items:center; gap:6px; margin-bottom:4px;}
+.match-side{display:flex; align-items:center; gap:6px; flex:1; min-width:0; font-weight:700; font-size:13.5px; overflow:hidden;}
+.match-side.left{justify-content:flex-start;}
+.match-side.right{justify-content:flex-end; text-align:right;}
+.match-side .side-name{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0;}
+.match-side.win{color:var(--red-bright);}
+.match .vs{flex-shrink:0; text-align:center; color:var(--gray-dim); font-family:var(--font-cond); font-size:11px; padding:0 2px;}
+.match-actions-v2{display:flex; flex-direction:column; gap:6px; margin-top:10px; flex:1; justify-content:flex-end;}
+.action-row{display:flex; justify-content:space-between; gap:8px;}
+.action-row .btn{flex:1; min-width:0; font-size:11px; padding:7px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; touch-action:manipulation;}
+.match-result{font-family:var(--font-cond); font-size:12.5px; color:var(--gray); margin-top:8px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex:1;}
+.match-result span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0;}
+
+/* ---------- bracket ---------- */
+.bracket-scroll{overflow-x:auto; padding-bottom:14px;}
+.bracket{display:flex; gap:34px; min-width:max-content; padding:6px 2px;}
+.round{display:flex; flex-direction:column; justify-content:space-around; gap:16px; min-width:220px;}
+.round .rlabel{font-family:var(--font-cond); text-transform:uppercase; letter-spacing:0.1em; font-size:12.5px; color:var(--gray); text-align:center; margin-bottom:6px; font-weight:700;}
+.bmatch{background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+.bslot{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 11px; font-size:14px; font-weight:600; border-bottom:1px solid var(--line);}
+.bslot:last-child{border-bottom:none;}
+.bslot.winner{color:var(--red-bright); background:color-mix(in srgb, var(--red) 8%, transparent);}
+.bslot.empty{color:var(--gray-dim); font-style:italic; font-weight:400;}
+.bslot .pickbtn{font-size:10.5px; padding:3px 7px; background:var(--bg-alt); border:1px solid var(--line); border-radius:5px; color:var(--gray);}
+.bslot .pickbtn:hover{color:#fff; border-color:var(--red);}
+.bmatch .undo{display:block; width:100%; text-align:center; font-size:10.5px; padding:4px; color:var(--gray-dim); background:transparent;}
+.bmatch .undo:hover{color:#ff6b6b;}
+.podium3{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;}
+.podium-card{flex:1; min-width:180px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; text-align:center;}
+.podium-card .medal{font-family:var(--font-display); font-size:30px;}
+.podium-card.p1{border-color:var(--gold);} .podium-card.p1 .medal{color:var(--gold);}
+.podium-card.p2{border-color:var(--silver);} .podium-card.p2 .medal{color:var(--silver);}
+.podium-card.p3{border-color:var(--bronze);} .podium-card.p3 .medal{color:var(--bronze);}
+.podium-card .pname{font-weight:700; font-size:17px; margin-top:4px;}
+.podium-card .plabel{font-family:var(--font-cond); font-size:12px; color:var(--gray); text-transform:uppercase; letter-spacing:0.08em;}
+

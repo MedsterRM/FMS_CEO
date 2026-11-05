@@ -64,15 +64,17 @@ Necesitas [Node.js](https://nodejs.org/) instalado.
 
 ```bash
 npm install
-npm start           # abre el juego en una ventana
-npm run build:win   # genera dist/FMS_CEO.exe
+npm start           # genera index.html y abre el juego en una ventana
+npm run build:win   # genera index.html y dist/FMS_CEO.exe
 ```
 > Compílalo desde Windows. En Linux/Mac, `electron-builder` necesita Wine para poner el icono al ejecutable.
 
 ## 📁 Archivos
 | Archivo | Qué es |
 |---|---|
-| `index.html` | El juego completo (todo incluido en un solo archivo) |
+| `index.html` | El juego completo (todo incluido en un solo archivo). **Se genera desde `src/`, no se edita a mano** |
+| `src/` | Código fuente del juego, separado por partes (ver abajo) |
+| `scripts/build.js` | Junta `src/` en `index.html` |
 | `main.js` | Ventana de escritorio (Electron) |
 | `package.json` | Configuración para compilar el `.exe` |
 | `manifest.webmanifest` | Configuración de la app para móvil (pantalla completa, horizontal, icono) |
@@ -80,6 +82,28 @@ npm run build:win   # genera dist/FMS_CEO.exe
 | `build/` | Iconos del juego |
 | `android/` | Proyecto de Android Studio (app para móvil) |
 | `AVISO_LEGAL.md` | Aviso de juego de fans |
+
+## 🧩 Código fuente
+El juego se sigue repartiendo como un único `index.html`, pero se edita en `src/`:
+
+```
+src/
+  index.html   plantilla: el esqueleto de la página y el orden en que se incluye todo
+  css/         estilos, por secciones (01-fuentes.css … 16-x-y-speakers.css)
+  js/          lógica del juego, por secciones (00-imagenes.js … 25-creador-y-ajustes.js)
+  assets/      imágenes y fuentes como archivos normales
+    faces/  logos/  speakers/  streamers/  tuiteros/  under/  emojis/  varios/  fonts/
+```
+
+- En la plantilla, `{{include:js/06-simulacion.js}}` mete ese archivo tal cual.
+- En el CSS y el JS, `{{asset:faces/aczino.jpg}}` se convierte en la imagen incrustada (`data:image/jpeg;base64,…`).
+- Los archivos de `js/` se juntan en un solo `<script>` y **el orden importa** (el número del nombre es su posición).
+  Por eso `src/index.html` no se abre directamente: hay que generar el juego.
+
+```bash
+npm run build   # genera index.html desde src/ (solo necesita Node, sin npm install)
+npm run check   # comprueba que index.html está al día con src/
+```
 
 ## 🐛 Fallos y sugerencias
 Escríbeme por X: **[@MedsterRM](https://x.com/MedsterRM)**. ¡Gracias por jugar!

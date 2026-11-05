@@ -1,0 +1,40 @@
+
+:root{
+  --bg:#0a0a0b;
+  --bg-alt:#131315;
+  --card:#1a1a1d;
+  --card-hover:#1f1f23;
+  --line:#2a2a2e;
+  --red:#e2101f;
+  --red-bright:#ff2436;
+  --red-dark:#7a0a13;
+  --gold:#d4af37;
+  --silver:#b7b9bd;
+  --bronze:#b0692f;
+  --white:#f2f2f0;
+  --gray:#8d8d93;
+  --gray-dim:#5b5b60;
+  --font-display:'Bebas Neue', 'Impact', 'Arial Narrow', sans-serif;
+  --font-body:'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  --font-cond:'Barlow Condensed', 'Arial Narrow', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%; background:var(--bg); overscroll-behavior:none;}
+body{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, color-mix(in srgb, var(--red) 14%, transparent), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 0%, color-mix(in srgb, var(--red) 8%, transparent), transparent 55%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--white);
+  font-family:var(--font-body);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--red); color:#fff;}
+a{color:inherit;}
+button{font-family:var(--font-cond); cursor:pointer; border:none; outline:none; touch-action:manipulation;}
+button:focus-visible, [tabindex]:focus-visible, input:focus-visible, select:focus-visible{outline:2px solid var(--red-bright); outline-offset:2px;}
+input,select{font-family:var(--font-body); background:var(--bg-alt); border:1px solid var(--line); color:var(--white); border-radius:6px; padding:8px 10px;}
+h1,h2,h3,h4{font-family:var(--font-display); letter-spacing:0.03em; font-weight:400;}
+
